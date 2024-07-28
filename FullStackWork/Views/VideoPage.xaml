@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="FullStackWork.Views.VideoPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FullStackWork.Views"
+             mc:Ignorable="d" 
+             xmlns:viewmodels="clr-namespace:FullStackWork.ViewModels" 
+             xmlns:cmd="http://www.galasoft.ch/mvvmlight" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <viewmodels:VideoPageVM/>
+    </UserControl.DataContext>
+    <Grid>
+        <Grid  Background="AliceBlue">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="9*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.35*" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"  Margin="0,0,10,0" Grid.ColumnSpan="2">
+                <Button Content="Load " Margin="0,0,10,0" Command="{Binding  LoadVideoCommand}" />
+                <Button Content="Undo" Margin="0,0,10,0" Command="{Binding UndoCommand}" />
+                <Button Content="Crop" Margin="0,0,10,0" Command="{Binding CropCommand}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <ListBox MaxHeight="300" ItemsSource="{Binding VideoDataList }" SelectedIndex="{Binding SelectIndex, Mode=TwoWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content="{Binding Name}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8"/>
+                                <Button Content="X" Grid.Column="1"  VerticalAlignment="Center" FontSize="8" HorizontalAlignment="Right" Command="{Binding  DataContext.DeleteImageCMD,RelativeSource={RelativeSource AncestorType= ListBox ,AncestorLevel=1}}" CommandParameter="{Binding }"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <ListBox MaxHeight="300" ItemsSource="{Binding ImageDataList }" SelectedIndex="{Binding SelectIndex, Mode=TwoWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content="{Binding Name}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8"/>
+                                <Button Content="X" Grid.Column="1"  VerticalAlignment="Center" FontSize="8" HorizontalAlignment="Right" Command="{Binding  DataContext.DeleteImageCMD,RelativeSource={RelativeSource AncestorType= ListBox ,AncestorLevel=1}}" CommandParameter="{Binding }"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+
+
+            <MediaElement Source="{Binding ImagePath}" Stretch="Fill" Grid.Row="1" x:Name="imgSlide" Grid.Column="1">
+            </MediaElement>
+            <Canvas Grid.Row="1" Name="canvas"  Grid.Column="1"  Background="#19DAB1B1">
+                <ContentPresenter Content="{Binding canvas}"/>
+                <!--<MediaElement Name="videoControl1"
+                Panel.ZIndex="1000"
+                Source="{Binding ImagePath}"
+                Stretch="Fill" />-->
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SizeChanged">
+                        <cmd:EventToCommand Command="{Binding CmdSizeChanged}"  PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <cmd:EventToCommand Command="{Binding CmdLeftMouseDown}"  PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <cmd:EventToCommand Command="{Binding CmdLeftMouseUp}" PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="MouseMove">
+                        <cmd:EventToCommand Command="{Binding CmdLeftMouseMove}" PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Canvas>
+        </Grid>
+    </Grid>
+</UserControl>
